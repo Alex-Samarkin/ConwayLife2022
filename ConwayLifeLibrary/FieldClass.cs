@@ -18,6 +18,28 @@ namespace ConwayLifeLibrary
         /// клетки
         /// </summary>
         public int[,] Items { get; set; } = new int[,]{};
+
+        /// только для иллюстрации, не печатайте
+        public int GetXY(int x = 0, int y = 0)
+        {
+            x = (x % Size + Size) % Size; // x будет в диапазоне от 0 до Size - 1
+            y = (y % Size + Size) % Size;
+
+            return Items[x, y];
+        }
+        /// <summary>
+        /// индексатор
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int this[int x, int y]
+        {
+            get => Items[(x % Size + Size) % Size, (y % Size + Size) % Size];
+            set => Items[(x % Size + Size) % Size, (y % Size + Size) % Size] = value;
+        }
+
+
         /// <summary>
         /// создание поля и заполнение переменной
         /// </summary>
@@ -38,6 +60,7 @@ namespace ConwayLifeLibrary
                 }
             }
         }
+
         public void RandomFill(int value = 1, int Seed = 0)
         {
             Random r = new Random(Seed);
@@ -47,6 +70,22 @@ namespace ConwayLifeLibrary
                 for (int j = 0; j < Size; j++)
                 {
                     Items[i, j] = r.Next(2);
+                }
+            }
+        }
+        public void RandomFillPercent(int value = 1, int Percent=30,int Seed = 0)
+        {
+            Random r = new Random(Seed);
+
+            for (int i = 0; i < Size; i++)
+            {
+                for (int j = 0; j < Size; j++)
+                {
+                    if (r.Next(100) < Percent)
+                    {
+                        Items[i, j] = r.Next(2);
+                    }
+                    else Items[i, j] = 0;
                 }
             }
         }
@@ -61,65 +100,15 @@ namespace ConwayLifeLibrary
             }
         }
 
-        public int GetXY(int x = 0, int y = 0)
-        {
-            x = (x % Size + Size) % Size;
-            y = (y % Size + Size) % Size;
-
-            return Items[x, y];
-        }
-
-        public int this[int x, int y]
-        {
-            get => GetXY(x, y);
-            set => Items[(x % Size + Size) % Size, (y % Size + Size) % Size] = value;
-        }
-
-        public void SetValue(int x, int y, int value) => this[x, y] = value;
-        public void SetDead(int x, int y) => SetValue(x, y, 0);
-        public void SetLive(int x, int y) => SetValue(x, y, 1);
         public int isLive(int x, int y) => (this[x, y] != 0) ? 1 : 0;
+
         public int isDead(int x, int y) => (this[x, y] == 0) ? 1 : 0;
 
         public int Near(int x, int y)
         {
-            return isLive(x-1, y-1)+ isLive(x-1, y) + isLive(x-1, y+1) +
-                   isLive(x, y-1) + isLive(x, y+1) +
-                   isLive(x+1, y-1) + isLive(x+1, y) + isLive(x+1, y+1) ;
-        }
-
-        public FieldClass Next()
-        {
-            /// Плохо, потому что заново создается поле и под него выделяется память
-            /// 
-            FieldClass res = new FieldClass(Size);
-
-            for (int i = 0; i < Size; i++)
-            {
-                for (int j = 0; j < Size; j++)
-                {
-                    var n = Near(i, j);
-                    if ((isDead(i,j) == 1) && (n==3))
-                    {
-                        res.SetLive(i,j);
-                        continue;
-                    }
-                    if ((isLive(i, j) == 1) && (n < 2))
-                    {
-                        res.SetDead(i, j);
-                        continue;
-                    }
-                    if ((isLive(i, j) == 1) && (n > 3))
-                    {
-                        res.SetDead(i, j);
-                        continue;
-                    }
-
-                    res[i, j] = this[i, j];
-                }
-            }
-
-            return res;
+            return isLive(x - 1, y - 1) + isLive(x - 1, y) + isLive(x - 1, y + 1) +
+                   isLive(x, y - 1) +                            isLive(x, y + 1) +
+                   isLive(x + 1, y - 1) + isLive(x + 1, y) + isLive(x + 1, y + 1);
         }
 
         public void Next(FieldClass source)
@@ -132,18 +121,15 @@ namespace ConwayLifeLibrary
                     var n = source.Near(i, j);
                     if ((source.isDead(i, j) == 1) && (n == 3))
                     {
-                        SetLive(i, j);
-                        continue;
+                        this[i, j] = 1; continue;
                     }
                     if ((source.isLive(i, j) == 1) && (n < 2))
                     {
-                        SetDead(i, j);
-                        continue;
+                        this[i, j] = 0; continue;
                     }
                     if ((source.isLive(i, j) == 1) && (n > 3))
                     {
-                        SetDead(i, j);
-                        continue;
+                        this[i, j] = 0; continue;
                     }
 
                     this[i, j] = source[i, j];
