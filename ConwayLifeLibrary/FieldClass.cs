@@ -90,6 +90,55 @@ namespace ConwayLifeLibrary
             }
         }
 
+        public void RandomFillSymmetry(int value = 1, int Seed = 0)
+        {
+            Random r = new Random(Seed);
+
+            for (int i = 0; i < Size / 2; i++)
+            {
+                for (int j = 0; j < Size / 2; j++)
+                {
+                    this[i, j] = r.Next(2);
+                    this[i, -j] = Items[i, j];
+                    this[-i, j] = Items[i, j];
+                    this[-i, -j] = Items[i, j];
+
+                    this[j,i] = this[i,j];
+                    this[j, -i] = this[i, j];
+                    this[-j, i] = this[i, j];
+                    this[-j, -i] = this[i, j];
+                }
+            }
+        }
+
+        public void RandomAppend(int Count = 0, bool symmetry = true)
+        {
+            if (Count <1)
+            {
+                Count = 1;
+            }
+
+            Random r = new Random();
+
+            for (int index = 0; index < Count; index++)
+            {
+                int i = r.Next(Size / 2);
+                int j = r.Next(Size / 2);
+                this[i, j] = 1;
+                if (symmetry)
+                {
+                    this[i, -j] = Items[i, j];
+                    this[-i, j] = Items[i, j];
+                    this[-i, -j] = Items[i, j];
+
+                    this[j, i] = this[i, j];
+                    this[j, -i] = this[i, j];
+                    this[-j, i] = this[i, j];
+                    this[-j, -i] = this[i, j];
+                }
+            }
+        }
+
         public FieldClass(int size = 1000, int seed = 0, bool random_fill = false)
         {
             Size = size;

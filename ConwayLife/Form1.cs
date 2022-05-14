@@ -84,6 +84,63 @@ namespace ConwayLife
             }
 
         }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            int s = Int32.Parse(toolStripTextBox2.Text);
+            if (s < 20) s = 20;
+            if (s > 20000) s = 1000;
+
+            Field1 = new FieldClass(s);
+            Field2 = new FieldClass(s);
+
+            Field1.RandomFill();
+
+            Painter.control = this;
+            Painter.F = Field1;
+            Painter.QPaint();
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (Size.Width > Size.Height)
+            {
+                Size = new Size(Size.Height,Size.Height);
+            }
+            else
+            {
+                Size = new Size(Size.Width, Size.Width);
+            }
+            
+        }
+
+        private void toolStripButton7_Click(object sender, EventArgs e)
+        {
+            int s = Int32.Parse(toolStripTextBox2.Text);
+            if (s < 20) s = 20;
+            if (s > 20000) s = 1000;
+
+            Field1 = new FieldClass(s);
+            Field2 = new FieldClass(s);
+
+            Field1.RandomFillSymmetry();
+
+            Painter.control = this;
+            Painter.F = Field1;
+            Painter.QPaint();
+
+        }
+
+        private void toolStripButton8_Click(object sender, EventArgs e)
+        {
+            int count = Int32.Parse(toolStripTextBox3.Text);
+            Field1.RandomAppend(count,true);
+
+            Painter.control = this;
+            Painter.F = Field1;
+            Painter.QPaint();
+
+        }
     }   
 
 }

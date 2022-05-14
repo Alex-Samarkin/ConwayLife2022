@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -15,12 +16,14 @@ namespace ConwayLifeLibrary
 
         public int W => control.ClientSize.Width;
         public int H => control.ClientSize.Height;
-        public Graphics Gr => control.CreateGraphics();
+        public Graphics Gr => _graphics = control.CreateGraphics();
+        private Graphics _graphics;
+        
 
         public FieldClass F { get; set; }
 
         public Pen pen => Pens.Black;
-        public Brush brush => Brushes.Blue;
+        public Brush brush => Brushes.DarkBlue;
 
         public void Paint()
         {
@@ -30,10 +33,12 @@ namespace ConwayLifeLibrary
 
             // Рисуем здесь
             Gr.Clear(Color.AliceBlue);
+            _graphics.SmoothingMode = SmoothingMode.HighSpeed;
+            _graphics.InterpolationMode = InterpolationMode.Low;
 
             // Размеры прямоугольника
             var dx = (float)W / F.Size;
-            var dy = (float)W / F.Size;
+            var dy = (float)H / F.Size;
 
             // Отрисовка клеток
             for (int i = 0; i < F.Size; i++)
@@ -42,7 +47,8 @@ namespace ConwayLifeLibrary
                 {
                     if (F.isLive(i,j)==1)
                     {
-                        Gr.DrawRectangle(pen,dx*i,dy*j,dx,dy);
+                        _graphics.FillRectangle(brush, dx * i, dy * j, dx, dy);
+                        _graphics.DrawRectangle(pen,dx*i,dy*j,dx,dy);
                     }
                 }
             }
@@ -55,10 +61,12 @@ namespace ConwayLifeLibrary
 
             // Рисуем здесь
             Gr.Clear(Color.AliceBlue);
+            _graphics.SmoothingMode = SmoothingMode.HighSpeed;
+            _graphics.InterpolationMode = InterpolationMode.Low;
 
             // Размеры прямоугольника
             var dx = (float)W / F.Size;
-            var dy = (float)W / F.Size;
+            var dy = (float)H / F.Size;
 
             // Много прямоугольников 
             List<RectangleF> rcFs = new List<RectangleF>();
@@ -75,7 +83,8 @@ namespace ConwayLifeLibrary
                     }
                 }
             }
-            Gr.DrawRectangles(pen,rcFs.ToArray());
+            _graphics.FillRectangles(brush, rcFs.ToArray());
+            //_graphics.DrawRectangles(pen,rcFs.ToArray());
         }
     }
 }
